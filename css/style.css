@@ -311,3 +311,21 @@ h1 {
 	text-decoration: underline;
 }
 
+
+/** Amber */
+
+
+.jtalkTool .CodeMirror {
+    font-family: Helvetica, sans;
+    font-size: 14px !important;
+}
+
+#jtalk {
+    height: 400px !important;
+}
+
+#class-browser {
+    position: absolute;
+    margin-top: -10px;
+    margin-left: 31%;
+}

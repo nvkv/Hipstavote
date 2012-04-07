@@ -4,14 +4,13 @@
     <title>Hipstavote</title> 
     <meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
     <link rel="stylesheet" type="text/css" href='css/style.css' /> 
-    <script type='text/javascript' src='js/amber.js'></script> 
-    <script type='text/javascript' src='js/lib/showdown.js'></script> 
+    <script type='text/javascript' src='js/amber.js'></script>     
   </head> 
   <body> 
-	    <p><b>Try a <button onClick="smalltalk.Browser._open()"> Class browser</button> right now!</b></p> 
+	    <p><button onClick="smalltalk.Browser._open()"> Class browser</button></p> 
       <a href="https://api.instagram.com/oauth/authorize/?client_id=dd174a41b66b45acb5597b927bc06608&redirect_uri=http://localhost:4000&response_type=token">Auth with Instagram</a>
-      <script type='text/javascript'>
-      // Read a page's GET URL variables and return them as an associative array.
+
+      <script type='text/javascript'>      
       function getUrlVars() {
           var vars = [], hash;
           var hashes = window.location.href.slice(window.location.href.indexOf('#') + 1).split('#');
@@ -22,6 +21,7 @@
           }
           return vars;
       }
+
       loadAmber({
           files: ['Hipstavote.js'],
           prefix: '',
