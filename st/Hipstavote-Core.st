@@ -1,7 +1,7 @@
-Smalltalk current createPackage: 'Hipstavote' properties: #{}!
+Smalltalk current createPackage: 'Hipstavote-Core' properties: #{}!
 Object subclass: #HVLocalStorage
 	instanceVariableNames: ''
-	category: 'Hipstavote'!
+	category: 'Hipstavote-Core'!
 
 !HVLocalStorage class methodsFor: 'Accessing'!
 
@@ -25,18 +25,18 @@ at: aKey put: anObject
 
 Object subclass: #HVRESTClient
 	instanceVariableNames: 'instaUrl'
-	category: 'Hipstavote'!
+	category: 'Hipstavote-Core'!
 
 !HVRESTClient methodsFor: 'Common Requests'!
 
 request: path callback: aBlock
 	|result|
-	result := jQuery ajax: (instaUrl, '/' , path)
-				  options: #{
+	result := jQuery ajax: (instaUrl, '/' , path) 
+				options: #{
 					'type' -> 'GET'.
 					'success' -> [:response | aBlock value: response].
 					'error' -> [:error | Transcript show: 'error'].
-					'dataType' -> 'jsonp'}.
+					'dataType' -> 'jsonp' }.
 !
 
 requestPhotosOf: anUserId callback: aBlock
@@ -65,5 +65,19 @@ instaUrl
 
 instaUrl: anUrl
 	instaUrl := anUrl.
+! !
+
+Object subclass: #HVPhoto
+	instanceVariableNames: 'jsonObject likesCount'
+	category: 'Hipstavote-Core'!
+
+!HVPhoto methodsFor: 'Accessing'!
+
+jsonObject
+	^jsonObject
+!
+
+jsonObject: anObject
+	jsonObject := anObject
 ! !
 

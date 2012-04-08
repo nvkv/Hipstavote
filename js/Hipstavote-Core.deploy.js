@@ -1,5 +1,5 @@
-smalltalk.addPackage('Hipstavote', {});
-smalltalk.addClass('HVLocalStorage', smalltalk.Object, [], 'Hipstavote');
+smalltalk.addPackage('Hipstavote-Core', {});
+smalltalk.addClass('HVLocalStorage', smalltalk.Object, [], 'Hipstavote-Core');
 
 smalltalk.addMethod(
 unescape('_at_'),
@@ -50,7 +50,7 @@ fn: function (aToken) {
 smalltalk.HVLocalStorage.klass);
 
 
-smalltalk.addClass('HVRESTClient', smalltalk.Object, ['instaUrl'], 'Hipstavote');
+smalltalk.addClass('HVRESTClient', smalltalk.Object, ['instaUrl'], 'Hipstavote-Core');
 smalltalk.addMethod(
 unescape('_request_callback_'),
 smalltalk.method({
@@ -125,6 +125,33 @@ fn: function (anUrl) {
 }
 }),
 smalltalk.HVRESTClient);
+
+
+
+smalltalk.addClass('HVPhoto', smalltalk.Object, ['jsonObject', 'likesCount'], 'Hipstavote-Core');
+smalltalk.addMethod(
+unescape('_jsonObject'),
+smalltalk.method({
+selector: unescape('jsonObject'),
+fn: function () {
+    var self = this;
+    return self['@jsonObject'];
+    return self;
+}
+}),
+smalltalk.HVPhoto);
+
+smalltalk.addMethod(
+unescape('_jsonObject_'),
+smalltalk.method({
+selector: unescape('jsonObject%3A'),
+fn: function (anObject) {
+    var self = this;
+    self['@jsonObject'] = anObject;
+    return self;
+}
+}),
+smalltalk.HVPhoto);
 
 
 

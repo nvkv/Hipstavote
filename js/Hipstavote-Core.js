@@ -1,5 +1,5 @@
-smalltalk.addPackage('Hipstavote', {});
-smalltalk.addClass('HVLocalStorage', smalltalk.Object, [], 'Hipstavote');
+smalltalk.addPackage('Hipstavote-Core', {});
+smalltalk.addClass('HVLocalStorage', smalltalk.Object, [], 'Hipstavote-Core');
 
 smalltalk.addMethod(
 unescape('_at_'),
@@ -70,7 +70,7 @@ referencedClasses: ["HVLocalStorage"]
 smalltalk.HVLocalStorage.klass);
 
 
-smalltalk.addClass('HVRESTClient', smalltalk.Object, ['instaUrl'], 'Hipstavote');
+smalltalk.addClass('HVRESTClient', smalltalk.Object, ['instaUrl'], 'Hipstavote-Core');
 smalltalk.addMethod(
 unescape('_request_callback_'),
 smalltalk.method({
@@ -83,7 +83,7 @@ fn: function (path, aBlock) {
     return self;
 },
 args: ["path", "aBlock"],
-source: unescape('request%3A%20path%20callback%3A%20aBlock%0A%09%7Cresult%7C%0A%09result%20%3A%3D%20jQuery%20ajax%3A%20%28instaUrl%2C%20%27/%27%20%2C%20path%29%0A%09%09%09%09%20%20options%3A%20%23%7B%0A%09%09%09%09%09%27type%27%20-%3E%20%27GET%27.%0A%09%09%09%09%09%27success%27%20-%3E%20%5B%3Aresponse%20%7C%20aBlock%20value%3A%20response%5D.%0A%09%09%09%09%09%27error%27%20-%3E%20%5B%3Aerror%20%7C%20Transcript%20show%3A%20%27error%27%5D.%0A%09%09%09%09%09%27dataType%27%20-%3E%20%27jsonp%27%7D.'),
+source: unescape('request%3A%20path%20callback%3A%20aBlock%0A%09%7Cresult%7C%0A%09result%20%3A%3D%20jQuery%20ajax%3A%20%28instaUrl%2C%20%27/%27%20%2C%20path%29%20%0A%09%09%09%09options%3A%20%23%7B%0A%09%09%09%09%09%27type%27%20-%3E%20%27GET%27.%0A%09%09%09%09%09%27success%27%20-%3E%20%5B%3Aresponse%20%7C%20aBlock%20value%3A%20response%5D.%0A%09%09%09%09%09%27error%27%20-%3E%20%5B%3Aerror%20%7C%20Transcript%20show%3A%20%27error%27%5D.%0A%09%09%09%09%09%27dataType%27%20-%3E%20%27jsonp%27%20%7D.'),
 messageSends: ["ajax:options:", unescape("%2C"), unescape("-%3E"), "value:", "show:"],
 referencedClasses: ["Transcript"]
 }),
@@ -175,6 +175,43 @@ messageSends: [],
 referencedClasses: []
 }),
 smalltalk.HVRESTClient);
+
+
+
+smalltalk.addClass('HVPhoto', smalltalk.Object, ['jsonObject', 'likesCount'], 'Hipstavote-Core');
+smalltalk.addMethod(
+unescape('_jsonObject'),
+smalltalk.method({
+selector: unescape('jsonObject'),
+category: 'Accessing',
+fn: function () {
+    var self = this;
+    return self['@jsonObject'];
+    return self;
+},
+args: [],
+source: unescape('jsonObject%0A%09%5EjsonObject'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.HVPhoto);
+
+smalltalk.addMethod(
+unescape('_jsonObject_'),
+smalltalk.method({
+selector: unescape('jsonObject%3A'),
+category: 'Accessing',
+fn: function (anObject) {
+    var self = this;
+    self['@jsonObject'] = anObject;
+    return self;
+},
+args: ["anObject"],
+source: unescape('jsonObject%3A%20anObject%0A%09jsonObject%20%3A%3D%20anObject'),
+messageSends: [],
+referencedClasses: []
+}),
+smalltalk.HVPhoto);
 
 
 
