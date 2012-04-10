@@ -1,4 +1,317 @@
 smalltalk.addPackage('Hipstavote-Core', {});
+smalltalk.addClass('HVApplication', smalltalk.Object, ['profile', 'photos', 'friends', 'friendsUsernames', 'userId', 'fromData', 'dueDate'], 'Hipstavote-Core');
+smalltalk.addMethod(
+unescape('_startApplication'),
+smalltalk.method({
+selector: unescape('startApplication'),
+fn: function () {
+    var self = this;
+    smalltalk.send(self, "_requestProfile", []);
+    return self;
+}
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_userId'),
+smalltalk.method({
+selector: unescape('userId'),
+fn: function () {
+    var self = this;
+    return self['@userId'];
+    return self;
+}
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_userId_'),
+smalltalk.method({
+selector: unescape('userId%3A'),
+fn: function (anId) {
+    var self = this;
+    self['@userId'] = anId;
+    return self;
+}
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_profileReceived_'),
+smalltalk.method({
+selector: unescape('profileReceived%3A'),
+fn: function (aProfile) {
+    var self = this;
+    self['@profile'] = aProfile;
+    smalltalk.send(self, "_requestFollowing", []);
+    return self;
+}
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_requestProfile'),
+smalltalk.method({
+selector: unescape('requestProfile'),
+fn: function () {
+    var self = this;
+    smalltalk.send(smalltalk.send(smalltalk.HVRESTClient || HVRESTClient, "_new", []), "_request_callback_", [smalltalk.send(unescape("v1/users/"), "__comma", [smalltalk.send(self, "_userId", [])]), function (result) {return smalltalk.send(self, "_profileReceived_", [result]);}]);
+    return self;
+}
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_requestPhotos'),
+smalltalk.method({
+selector: unescape('requestPhotos'),
+fn: function () {
+    var self = this;
+    smalltalk.send(smalltalk.send(smalltalk.HVRESTClient || HVRESTClient, "_new", []), "_request_callback_", [smalltalk.send(smalltalk.send(unescape("v1/users/"), "__comma", [smalltalk.send(self, "_userId", [])]), "__comma", [unescape("/media/recent")]), function (result) {return smalltalk.send(self, "_photosReceived_", [result]);}]);
+    return self;
+}
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_photosReceived_'),
+smalltalk.method({
+selector: unescape('photosReceived%3A'),
+fn: function (aPhotos) {
+    var self = this;
+    self['@photos'] = smalltalk.send(smalltalk.Array || Array, "_new", []);
+    smalltalk.send(smalltalk.send(aPhotos, "_data", []), "_do_", [function (each) {return smalltalk.send(self['@photos'], "_add_", [smalltalk.send(smalltalk.send(smalltalk.HVPhoto || HVPhoto, "_new", []), "_jsonObject_", [each])]);}]);
+    smalltalk.send(self, "_calculateStatsForPhotos", []);
+    smalltalk.send(self['@photos'], "_do_", [function (each) {var widget = nil;widget = smalltalk.send(smalltalk.send(smalltalk.HVPhotoWidget || HVPhotoWidget, "_new", []), "_photo_", [each]);return smalltalk.send(widget, "_appendToJQuery_", [smalltalk.send(unescape("%23photos"), "_asJQuery", [])]);}]);
+    return self;
+}
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_requestFollowing'),
+smalltalk.method({
+selector: unescape('requestFollowing'),
+fn: function () {
+    var self = this;
+    smalltalk.send(smalltalk.send(smalltalk.HVRESTClient || HVRESTClient, "_new", []), "_request_callback_", [smalltalk.send(smalltalk.send(unescape("v1/users/"), "__comma", [smalltalk.send(self, "_userId", [])]), "__comma", [unescape("/follows")]), function (result) {return smalltalk.send(self, "_followingReceived_", [result]);}]);
+    return self;
+}
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_followingReceived_'),
+smalltalk.method({
+selector: unescape('followingReceived%3A'),
+fn: function (following) {
+    var self = this;
+    self['@friends'] = smalltalk.send(following, "_data", []);
+    smalltalk.send(self, "_requestPhotos", []);
+    return self;
+}
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_calculateStatsForPhotos'),
+smalltalk.method({
+selector: unescape('calculateStatsForPhotos'),
+fn: function () {
+    var self = this;
+    smalltalk.send(self['@photos'], "_collect_", [function (photo) {var likes = nil;likes = smalltalk.send(smalltalk.send(smalltalk.send(photo, "_jsonObject", []), "_likes", []), "_data", []);return smalltalk.send(photo, "_likesCount_", [smalltalk.send(smalltalk.send(likes, "_select_", [function (like) {return smalltalk.send(smalltalk.send(self, "_friendsUsernames", []), "_includes_", [smalltalk.send(like, "_username", [])]);}]), "_size", [])]);}]);
+    return self;
+}
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_friendsUsernames'),
+smalltalk.method({
+selector: unescape('friendsUsernames'),
+fn: function () {
+    var self = this;
+    return ($receiver = self['@friendsUsernames']) == nil ||
+        $receiver == undefined ? function () {return smalltalk.send(self['@friends'], "_collect_", [function (user) {return smalltalk.send(user, "_username", []);}]);}() : $receiver;
+    return self;
+}
+}),
+smalltalk.HVApplication);
+
+
+smalltalk.addMethod(
+unescape('_startApplication'),
+smalltalk.method({
+selector: unescape('startApplication'),
+fn: function () {
+    var self = this;
+    var app = nil;
+    app = smalltalk.send(smalltalk.send(smalltalk.HVApplication || HVApplication, "_new", []), "_userId_", ["21068579"]);
+    smalltalk.send(app, "_startApplication", []);
+    return app;
+    return self;
+}
+}),
+smalltalk.HVApplication.klass);
+
+
+smalltalk.addClass('HVInstaObject', smalltalk.Object, ['jsonObject'], 'Hipstavote-Core');
+smalltalk.addMethod(
+unescape('_jsonObject'),
+smalltalk.method({
+selector: unescape('jsonObject'),
+fn: function () {
+    var self = this;
+    return self['@jsonObject'];
+    return self;
+}
+}),
+smalltalk.HVInstaObject);
+
+smalltalk.addMethod(
+unescape('_jsonObject_'),
+smalltalk.method({
+selector: unescape('jsonObject%3A'),
+fn: function (anObject) {
+    var self = this;
+    self['@jsonObject'] = anObject;
+    return self;
+}
+}),
+smalltalk.HVInstaObject);
+
+
+
+smalltalk.addClass('HVPhoto', smalltalk.HVInstaObject, ['likesCount'], 'Hipstavote-Core');
+smalltalk.addMethod(
+unescape('_likesCount'),
+smalltalk.method({
+selector: unescape('likesCount'),
+fn: function () {
+    var self = this;
+    return self['@likesCount'];
+    return self;
+}
+}),
+smalltalk.HVPhoto);
+
+smalltalk.addMethod(
+unescape('_likesCount_'),
+smalltalk.method({
+selector: unescape('likesCount%3A'),
+fn: function (count) {
+    var self = this;
+    self['@likesCount'] = count;
+    return self;
+}
+}),
+smalltalk.HVPhoto);
+
+
+
+smalltalk.addClass('HVRESTClient', smalltalk.Object, ['instaUrl', 'requestResult'], 'Hipstavote-Core');
+smalltalk.addMethod(
+unescape('_request_callback_'),
+smalltalk.method({
+selector: unescape('request%3Acallback%3A'),
+fn: function (path, aBlock) {
+    var self = this;
+    var result = nil;
+    result = smalltalk.send(typeof jQuery == "undefined" ? nil : jQuery, "_ajax_options_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(self['@instaUrl'], "__comma", [unescape("/")]), "__comma", [path]), "__comma", [unescape("%3Faccess_token%3D")]), "__comma", [smalltalk.send(smalltalk.HVLocalStorage || HVLocalStorage, "_accessToken", [])]), smalltalk.HashedCollection._fromPairs_([smalltalk.send("type", "__minus_gt", ["GET"]), smalltalk.send("success", "__minus_gt", [function (response) {return smalltalk.send(aBlock, "_value_", [response]);}]), smalltalk.send("error", "__minus_gt", [function (error) {return smalltalk.send(smalltalk.Transcript || Transcript, "_show_", ["error"]);}]), smalltalk.send("dataType", "__minus_gt", ["jsonp"])])]);
+    return self;
+}
+}),
+smalltalk.HVRESTClient);
+
+smalltalk.addMethod(
+unescape('_initialize'),
+smalltalk.method({
+selector: unescape('initialize'),
+fn: function () {
+    var self = this;
+    self['@instaUrl'] = unescape("https%3A//api.instagram.com");
+    return self;
+}
+}),
+smalltalk.HVRESTClient);
+
+smalltalk.addMethod(
+unescape('_testPhotos'),
+smalltalk.method({
+selector: unescape('testPhotos'),
+fn: function () {
+    var self = this;
+    var resultObject = nil;
+    smalltalk.send(self, "_requestPhotosOf_callback_", ["21068579", function (result) {return smalltalk.send(self, "_requestResult_", [result]);}]);
+    return self;
+}
+}),
+smalltalk.HVRESTClient);
+
+smalltalk.addMethod(
+unescape('_requestPhotosOf_callback_'),
+smalltalk.method({
+selector: unescape('requestPhotosOf%3Acallback%3A'),
+fn: function (anUserId, aBlock) {
+    var self = this;
+    var path = nil;
+    path = smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(unescape("v1/users/"), "__comma", [anUserId]), "__comma", [unescape("/media/recent")]), "__comma", [unescape("%3Faccess_token%3D")]), "__comma", [smalltalk.send(smalltalk.HVLocalStorage || HVLocalStorage, "_accessToken", [])]);
+    smalltalk.send(self, "_request_callback_", [path, aBlock]);
+    return self;
+}
+}),
+smalltalk.HVRESTClient);
+
+smalltalk.addMethod(
+unescape('_instaUrl'),
+smalltalk.method({
+selector: unescape('instaUrl'),
+fn: function () {
+    var self = this;
+    return self['@instaUrl'];
+    return self;
+}
+}),
+smalltalk.HVRESTClient);
+
+smalltalk.addMethod(
+unescape('_instaUrl_'),
+smalltalk.method({
+selector: unescape('instaUrl%3A'),
+fn: function (anUrl) {
+    var self = this;
+    self['@instaUrl'] = anUrl;
+    return self;
+}
+}),
+smalltalk.HVRESTClient);
+
+smalltalk.addMethod(
+unescape('_requestResult_'),
+smalltalk.method({
+selector: unescape('requestResult%3A'),
+fn: function (aResult) {
+    var self = this;
+    self['@requestResult'] = aResult;
+    return self;
+}
+}),
+smalltalk.HVRESTClient);
+
+smalltalk.addMethod(
+unescape('_requestResult'),
+smalltalk.method({
+selector: unescape('requestResult'),
+fn: function () {
+    var self = this;
+    return self['@requestResult'];
+    return self;
+}
+}),
+smalltalk.HVRESTClient);
+
+
+
 smalltalk.addClass('HVLocalStorage', smalltalk.Object, [], 'Hipstavote-Core');
 
 smalltalk.addMethod(
@@ -48,110 +361,5 @@ fn: function (aToken) {
 }
 }),
 smalltalk.HVLocalStorage.klass);
-
-
-smalltalk.addClass('HVRESTClient', smalltalk.Object, ['instaUrl'], 'Hipstavote-Core');
-smalltalk.addMethod(
-unescape('_request_callback_'),
-smalltalk.method({
-selector: unescape('request%3Acallback%3A'),
-fn: function (path, aBlock) {
-    var self = this;
-    var result = nil;
-    result = smalltalk.send(typeof jQuery == "undefined" ? nil : jQuery, "_ajax_options_", [smalltalk.send(smalltalk.send(self['@instaUrl'], "__comma", [unescape("/")]), "__comma", [path]), smalltalk.HashedCollection._fromPairs_([smalltalk.send("type", "__minus_gt", ["GET"]), smalltalk.send("success", "__minus_gt", [function (response) {return smalltalk.send(aBlock, "_value_", [response]);}]), smalltalk.send("error", "__minus_gt", [function (error) {return smalltalk.send(smalltalk.Transcript || Transcript, "_show_", ["error"]);}]), smalltalk.send("dataType", "__minus_gt", ["jsonp"])])]);
-    return self;
-}
-}),
-smalltalk.HVRESTClient);
-
-smalltalk.addMethod(
-unescape('_initialize'),
-smalltalk.method({
-selector: unescape('initialize'),
-fn: function () {
-    var self = this;
-    self['@instaUrl'] = unescape("https%3A//api.instagram.com");
-    return self;
-}
-}),
-smalltalk.HVRESTClient);
-
-smalltalk.addMethod(
-unescape('_testPhotos'),
-smalltalk.method({
-selector: unescape('testPhotos'),
-fn: function () {
-    var self = this;
-    smalltalk.send(self, "_requestPhotosOf_callback_", ["21068579", function (result) {return smalltalk.send(smalltalk.Transcript || Transcript, "_show_", [smalltalk.send(result, "_asJSONString", [])]);}]);
-    return self;
-}
-}),
-smalltalk.HVRESTClient);
-
-smalltalk.addMethod(
-unescape('_requestPhotosOf_callback_'),
-smalltalk.method({
-selector: unescape('requestPhotosOf%3Acallback%3A'),
-fn: function (anUserId, aBlock) {
-    var self = this;
-    var path = nil;
-    path = smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(unescape("v1/users/"), "__comma", [anUserId]), "__comma", [unescape("/media/recent")]), "__comma", [unescape("%3Faccess_token%3D")]), "__comma", [smalltalk.send(smalltalk.HVLocalStorage || HVLocalStorage, "_accessToken", [])]);
-    smalltalk.send(self, "_request_callback_", [path, aBlock]);
-    return self;
-}
-}),
-smalltalk.HVRESTClient);
-
-smalltalk.addMethod(
-unescape('_instaUrl'),
-smalltalk.method({
-selector: unescape('instaUrl'),
-fn: function () {
-    var self = this;
-    return self['@instaUrl'];
-    return self;
-}
-}),
-smalltalk.HVRESTClient);
-
-smalltalk.addMethod(
-unescape('_instaUrl_'),
-smalltalk.method({
-selector: unescape('instaUrl%3A'),
-fn: function (anUrl) {
-    var self = this;
-    self['@instaUrl'] = anUrl;
-    return self;
-}
-}),
-smalltalk.HVRESTClient);
-
-
-
-smalltalk.addClass('HVPhoto', smalltalk.Object, ['jsonObject', 'likesCount'], 'Hipstavote-Core');
-smalltalk.addMethod(
-unescape('_jsonObject'),
-smalltalk.method({
-selector: unescape('jsonObject'),
-fn: function () {
-    var self = this;
-    return self['@jsonObject'];
-    return self;
-}
-}),
-smalltalk.HVPhoto);
-
-smalltalk.addMethod(
-unescape('_jsonObject_'),
-smalltalk.method({
-selector: unescape('jsonObject%3A'),
-fn: function (anObject) {
-    var self = this;
-    self['@jsonObject'] = anObject;
-    return self;
-}
-}),
-smalltalk.HVPhoto);
-
 
 

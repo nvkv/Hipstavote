@@ -23,19 +23,18 @@
       }
 
       loadAmber({
-          files: ['Hipstavote-Core.js', 'Hipstavote-Tests.js'],
+          files: ['Hipstavote-Core.js', 'Hipstavote-Tests.js', 'Hipstavote-UI.js'],
           prefix: '',
           ready: function() {
             $(function() {
               var token = getUrlVars()['access_token'];
               smalltalk.HVLocalStorage._accessToken_(token);
-              alert(localStorage['access_token']);
+              //alert(localStorage['access_token']);
             });
           }
       }); 
       </script> 
       <div id="photos">
-
       </div>
   </body> 
 </html> 

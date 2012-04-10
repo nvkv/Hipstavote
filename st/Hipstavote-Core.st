@@ -1,37 +1,122 @@
 Smalltalk current createPackage: 'Hipstavote-Core' properties: #{}!
-Object subclass: #HVLocalStorage
-	instanceVariableNames: ''
+Object subclass: #HVApplication
+	instanceVariableNames: 'profile photos friends friendsUsernames userId fromData dueDate'
 	category: 'Hipstavote-Core'!
+!HVApplication commentStamp!
+startApplication
+	HVApplication new userId: ''.!
 
-!HVLocalStorage class methodsFor: 'Accessing'!
+!HVApplication methodsFor: 'accessors'!
 
-accessToken
-	^HVLocalStorage at: 'access_token'.
+userId
+	^userId.
 !
 
-accessToken: aToken
-	HVLocalStorage at: 'access_token' put: aToken.
+userId: anId
+	userId := anId.
+!
+
+friendsUsernames
+	^friendsUsernames ifNil: [ friends collect: [:user | user username]].
 ! !
 
-!HVLocalStorage class methodsFor: 'Setters and Getters'!
+!HVApplication methodsFor: 'logic'!
 
-at: aKey
-	^<localStorage.getItem(aKey)>.
+startApplication
+	self requestProfile.
 !
 
-at: aKey put: anObject
-	<localStorage.setItem(aKey, anObject)>.
+profileReceived: aProfile
+	profile := aProfile.
+	self requestFollowing.
+!
+
+requestProfile
+	HVRESTClient new 
+		request: ('v1/users/', self userId)  
+		callback: [:result | self profileReceived: result].
+!
+
+requestPhotos
+	HVRESTClient new 
+		request: ('v1/users/', self userId, '/media/recent')  
+		callback: [:result | self photosReceived: result].
+!
+
+photosReceived: aPhotos
+	photos := Array new.
+	(aPhotos data) do: [:each | photos add: (HVPhoto new jsonObject: each)]. 
+	self calculateStatsForPhotos.
+	photos do: [:each | 
+		|widget|
+		widget := HVPhotoWidget new photo: each.
+		widget appendToJQuery: ('#photos' asJQuery)].
+!
+
+requestFollowing
+	HVRESTClient new 
+		request: ('v1/users/', self userId, '/follows')  
+		callback: [:result | self followingReceived: result].
+!
+
+followingReceived: following
+	friends := following data.
+	self requestPhotos.
+!
+
+calculateStatsForPhotos
+	photos collect: [:photo |
+		|likes|
+		likes := photo jsonObject likes data.
+		photo likesCount: (likes select: [:like | self friendsUsernames includes: (like username)]) size].
+! !
+
+!HVApplication class methodsFor: 'not yet classified'!
+
+startApplication
+	|app|
+	app := HVApplication new userId: '21068579'.
+	app startApplication.
+	^app.
+! !
+
+Object subclass: #HVInstaObject
+	instanceVariableNames: 'jsonObject'
+	category: 'Hipstavote-Core'!
+
+!HVInstaObject methodsFor: 'not yet classified'!
+
+jsonObject
+	^jsonObject
+!
+
+jsonObject: anObject
+	jsonObject := anObject.
+! !
+
+HVInstaObject subclass: #HVPhoto
+	instanceVariableNames: 'likesCount'
+	category: 'Hipstavote-Core'!
+
+!HVPhoto methodsFor: 'not yet classified'!
+
+likesCount
+	^likesCount
+!
+
+likesCount: count
+	likesCount := count.
 ! !
 
 Object subclass: #HVRESTClient
-	instanceVariableNames: 'instaUrl'
+	instanceVariableNames: 'instaUrl requestResult'
 	category: 'Hipstavote-Core'!
 
 !HVRESTClient methodsFor: 'Common Requests'!
 
 request: path callback: aBlock
 	|result|
-	result := jQuery ajax: (instaUrl, '/' , path) 
+	result := jQuery ajax: (instaUrl, '/' , path, '?access_token=', (HVLocalStorage accessToken)) 
 				options: #{
 					'type' -> 'GET'.
 					'success' -> [:response | aBlock value: response].
@@ -54,7 +139,8 @@ initialize
 !HVRESTClient methodsFor: 'Requests'!
 
 testPhotos
-	self requestPhotosOf: '21068579' callback: [:result | Transcript show: (result asJSONString)].
+	|resultObject|
+	self requestPhotosOf: '21068579' callback: [:result | self requestResult: result].
 ! !
 
 !HVRESTClient methodsFor: 'Setters/Getters'!
@@ -65,19 +151,37 @@ instaUrl
 
 instaUrl: anUrl
 	instaUrl := anUrl.
-! !
-
-Object subclass: #HVPhoto
-	instanceVariableNames: 'jsonObject likesCount'
-	category: 'Hipstavote-Core'!
-
-!HVPhoto methodsFor: 'Accessing'!
-
-jsonObject
-	^jsonObject
 !
 
-jsonObject: anObject
-	jsonObject := anObject
+requestResult: aResult
+	requestResult := aResult.
+!
+
+requestResult
+	^requestResult.
+! !
+
+Object subclass: #HVLocalStorage
+	instanceVariableNames: ''
+	category: 'Hipstavote-Core'!
+
+!HVLocalStorage class methodsFor: 'Accessing'!
+
+accessToken
+	^HVLocalStorage at: 'access_token'.
+!
+
+accessToken: aToken
+	HVLocalStorage at: 'access_token' put: aToken.
+! !
+
+!HVLocalStorage class methodsFor: 'Setters and Getters'!
+
+at: aKey
+	^<localStorage.getItem(aKey)>.
+!
+
+at: aKey put: anObject
+	<localStorage.setItem(aKey, anObject)>.
 ! !
 
