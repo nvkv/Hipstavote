@@ -8,8 +8,7 @@ Widget subclass: #HVPhotoWidget
 renderOn: html
 	html div with: [
 		html img src: ((photo jsonObject images at: 'low_resolution') url).
-		html p with: 'Интересные лайки: ', photo likesCount.
-	].
+		html p with: 'Интересные лайки: ', photo likesCount.]; class: 'photo'.
 !
 
 photo

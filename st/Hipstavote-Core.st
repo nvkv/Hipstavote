@@ -1,4 +1,95 @@
 Smalltalk current createPackage: 'Hipstavote-Core' properties: #{}!
+Object subclass: #HVLocalStorage
+	instanceVariableNames: ''
+	category: 'Hipstavote-Core'!
+
+!HVLocalStorage class methodsFor: 'Accessing'!
+
+accessToken
+	^HVLocalStorage at: 'access_token'.
+!
+
+accessToken: aToken
+	HVLocalStorage at: 'access_token' put: aToken.
+! !
+
+!HVLocalStorage class methodsFor: 'Setters and Getters'!
+
+at: aKey
+	^<localStorage.getItem(aKey)>.
+!
+
+at: aKey put: anObject
+	<localStorage.setItem(aKey, anObject)>.
+! !
+
+Object subclass: #HVRESTClient
+	instanceVariableNames: 'instaUrl requestResult'
+	category: 'Hipstavote-Core'!
+
+!HVRESTClient methodsFor: 'Common Requests'!
+
+request: path callback: aBlock
+	|result|
+	result := jQuery ajax: (instaUrl, '/' , path, '?access_token=', (HVLocalStorage accessToken)) 
+				options: #{
+					'type' -> 'GET'.
+					'success' -> [:response | aBlock value: response].
+					'error' -> [:error | Transcript show: 'error'].
+					'dataType' -> 'jsonp' }.
+!
+
+requestPhotosOf: anUserId callback: aBlock
+	|path|
+	path := 'v1/users/', anUserId, '/media/recent', '?access_token=', (HVLocalStorage accessToken).
+	self request: path callback: aBlock
+! !
+
+!HVRESTClient methodsFor: 'Initialization'!
+
+initialize
+	instaUrl := 'https://api.instagram.com'
+! !
+
+!HVRESTClient methodsFor: 'Requests'!
+
+testPhotos
+	|resultObject|
+	self requestPhotosOf: '21068579' callback: [:result | self requestResult: result].
+! !
+
+!HVRESTClient methodsFor: 'Setters/Getters'!
+
+instaUrl
+	^instaUrl
+!
+
+instaUrl: anUrl
+	instaUrl := anUrl.
+!
+
+requestResult: aResult
+	requestResult := aResult.
+!
+
+requestResult
+	^requestResult.
+! !
+
+Object subclass: #HVInstaObject
+	instanceVariableNames: 'jsonObject'
+	category: 'Hipstavote-Core'!
+
+!HVInstaObject methodsFor: 'not yet classified'!
+
+jsonObject
+	^jsonObject
+!
+
+jsonObject: anObject
+	jsonObject := anObject.
+! !
+
 Object subclass: #HVApplication
 	instanceVariableNames: 'profile photos friends friendsUsernames userId fromData dueDate'
 	category: 'Hipstavote-Core'!
@@ -80,20 +171,6 @@ startApplication
 	^app.
 ! !
 
-Object subclass: #HVInstaObject
-	instanceVariableNames: 'jsonObject'
-	category: 'Hipstavote-Core'!
-
-!HVInstaObject methodsFor: 'not yet classified'!
-
-jsonObject
-	^jsonObject
-!
-
-jsonObject: anObject
-	jsonObject := anObject.
-! !
-
 HVInstaObject subclass: #HVPhoto
 	instanceVariableNames: 'likesCount'
 	category: 'Hipstavote-Core'!
@@ -106,82 +183,5 @@ likesCount
 
 likesCount: count
 	likesCount := count.
-! !
-
-Object subclass: #HVRESTClient
-	instanceVariableNames: 'instaUrl requestResult'
-	category: 'Hipstavote-Core'!
-
-!HVRESTClient methodsFor: 'Common Requests'!
-
-request: path callback: aBlock
-	|result|
-	result := jQuery ajax: (instaUrl, '/' , path, '?access_token=', (HVLocalStorage accessToken)) 
-				options: #{
-					'type' -> 'GET'.
-					'success' -> [:response | aBlock value: response].
-					'error' -> [:error | Transcript show: 'error'].
-					'dataType' -> 'jsonp' }.
-!
-
-requestPhotosOf: anUserId callback: aBlock
-	|path|
-	path := 'v1/users/', anUserId, '/media/recent', '?access_token=', (HVLocalStorage accessToken).
-	self request: path callback: aBlock
-! !
-
-!HVRESTClient methodsFor: 'Initialization'!
-
-initialize
-	instaUrl := 'https://api.instagram.com'
-! !
-
-!HVRESTClient methodsFor: 'Requests'!
-
-testPhotos
-	|resultObject|
-	self requestPhotosOf: '21068579' callback: [:result | self requestResult: result].
-! !
-
-!HVRESTClient methodsFor: 'Setters/Getters'!
-
-instaUrl
-	^instaUrl
-!
-
-instaUrl: anUrl
-	instaUrl := anUrl.
-!
-
-requestResult: aResult
-	requestResult := aResult.
-!
-
-requestResult
-	^requestResult.
-! !
-
-Object subclass: #HVLocalStorage
-	instanceVariableNames: ''
-	category: 'Hipstavote-Core'!
-
-!HVLocalStorage class methodsFor: 'Accessing'!
-
-accessToken
-	^HVLocalStorage at: 'access_token'.
-!
-
-accessToken: aToken
-	HVLocalStorage at: 'access_token' put: aToken.
-! !
-
-!HVLocalStorage class methodsFor: 'Setters and Getters'!
-
-at: aKey
-	^<localStorage.getItem(aKey)>.
-!
-
-at: aKey put: anObject
-	<localStorage.setItem(aKey, anObject)>.
 ! !
 
