@@ -1,6 +1,8 @@
+Copyright (C) 2012 Sёmka Novikov <semka.novikov@gmail.com>
 Copyright (C) 2011 Nicolas Petton <petton.nicolas@gmail.com>
 Copyright (C) 2011 Amber contributors https://github.com/NicolasPetton/amber/contributors
 
+This software based on Amber Smalltalk by Nicolas Petton (http://amber-lang.net)
 Parts of Amber take ideas from Clamato (http://clamato.net), written by Avi Bryant.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
