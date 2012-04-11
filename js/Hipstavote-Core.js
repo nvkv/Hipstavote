@@ -79,12 +79,15 @@ category: 'Common Requests',
 fn: function (path, aBlock) {
     var self = this;
     var result = nil;
-    result = smalltalk.send(typeof jQuery == "undefined" ? nil : jQuery, "_ajax_options_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(self['@instaUrl'], "__comma", [unescape("/")]), "__comma", [path]), "__comma", [unescape("%3Faccess_token%3D")]), "__comma", [smalltalk.send(smalltalk.HVLocalStorage || HVLocalStorage, "_accessToken", [])]), smalltalk.HashedCollection._fromPairs_([smalltalk.send("type", "__minus_gt", ["GET"]), smalltalk.send("success", "__minus_gt", [function (response) {return smalltalk.send(aBlock, "_value_", [response]);}]), smalltalk.send("error", "__minus_gt", [function (error) {return smalltalk.send(smalltalk.Transcript || Transcript, "_show_", ["error"]);}]), smalltalk.send("dataType", "__minus_gt", ["jsonp"])])]);
+    var options = nil;
+    var getParams = nil;
+    options = smalltalk.HashedCollection._fromPairs_([smalltalk.send("type", "__minus_gt", ["GET"]), smalltalk.send("data", "__minus_gt", [smalltalk.send(unescape("access_token%3D"), "__comma", [smalltalk.send(smalltalk.HVLocalStorage || HVLocalStorage, "_accessToken", [])])]), smalltalk.send("success", "__minus_gt", [function (response) {return smalltalk.send(aBlock, "_value_", [response]);}]), smalltalk.send("error", "__minus_gt", [function (error) {return smalltalk.send(smalltalk.Transcript || Transcript, "_show_", ["error"]);}]), smalltalk.send("dataType", "__minus_gt", ["jsonp"])]);
+    result = smalltalk.send(typeof jQuery == "undefined" ? nil : jQuery, "_ajax_options_", [smalltalk.send(smalltalk.send(self['@instaUrl'], "__comma", [unescape("/")]), "__comma", [path]), options]);
     return self;
 },
 args: ["path", "aBlock"],
-source: unescape('request%3A%20path%20callback%3A%20aBlock%0A%09%7Cresult%7C%0A%09result%20%3A%3D%20jQuery%20ajax%3A%20%28instaUrl%2C%20%27/%27%20%2C%20path%2C%20%27%3Faccess_token%3D%27%2C%20%28HVLocalStorage%20accessToken%29%29%20%0A%09%09%09%09options%3A%20%23%7B%0A%09%09%09%09%09%27type%27%20-%3E%20%27GET%27.%0A%09%09%09%09%09%27success%27%20-%3E%20%5B%3Aresponse%20%7C%20aBlock%20value%3A%20response%5D.%0A%09%09%09%09%09%27error%27%20-%3E%20%5B%3Aerror%20%7C%20Transcript%20show%3A%20%27error%27%5D.%0A%09%09%09%09%09%27dataType%27%20-%3E%20%27jsonp%27%20%7D.'),
-messageSends: ["ajax:options:", unescape("%2C"), "accessToken", unescape("-%3E"), "value:", "show:"],
+source: unescape('request%3A%20path%20callback%3A%20aBlock%0A%09%7Cresult%20options%20getParams%7C%0A%09options%20%3A%3D%20%23%7B%27type%27%20-%3E%20%27GET%27.%0A%09%09%09%20%20%20%20%27data%27%20-%3E%20%28%27access_token%3D%27%2C%20%28HVLocalStorage%20accessToken%29%29.%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%27success%27%20-%3E%20%5B%3Aresponse%20%7C%20aBlock%20value%3A%20response%5D.%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%27error%27%20-%3E%20%5B%3Aerror%20%7C%20Transcript%20show%3A%20%27error%27%5D.%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%27dataType%27%20-%3E%20%27jsonp%27%20%7D.%0A%09result%20%3A%3D%20jQuery%20ajax%3A%20%28instaUrl%2C%20%27/%27%20%2C%20path%29%20options%3A%20options.'),
+messageSends: [unescape("-%3E"), unescape("%2C"), "accessToken", "value:", "show:", "ajax:options:"],
 referencedClasses: ["HVLocalStorage", "Transcript"]
 }),
 smalltalk.HVRESTClient);
@@ -365,13 +368,12 @@ fn: function (aPhotos) {
     self['@photos'] = smalltalk.send(smalltalk.Array || Array, "_new", []);
     smalltalk.send(smalltalk.send(aPhotos, "_data", []), "_do_", [function (each) {return smalltalk.send(self['@photos'], "_add_", [smalltalk.send(smalltalk.send(smalltalk.HVPhoto || HVPhoto, "_new", []), "_jsonObject_", [each])]);}]);
     smalltalk.send(self, "_calculateStatsForPhotos", []);
-    smalltalk.send(self['@photos'], "_do_", [function (each) {var widget = nil;widget = smalltalk.send(smalltalk.send(smalltalk.HVPhotoWidget || HVPhotoWidget, "_new", []), "_photo_", [each]);return smalltalk.send(widget, "_appendToJQuery_", [smalltalk.send(unescape("%23photos"), "_asJQuery", [])]);}]);
     return self;
 },
 args: ["aPhotos"],
-source: unescape('photosReceived%3A%20aPhotos%0A%09photos%20%3A%3D%20Array%20new.%0A%09%28aPhotos%20data%29%20do%3A%20%5B%3Aeach%20%7C%20photos%20add%3A%20%28HVPhoto%20new%20jsonObject%3A%20each%29%5D.%20%0A%09self%20calculateStatsForPhotos.%0A%09photos%20do%3A%20%5B%3Aeach%20%7C%20%0A%09%09%7Cwidget%7C%0A%09%09widget%20%3A%3D%20HVPhotoWidget%20new%20photo%3A%20each.%0A%09%09widget%20appendToJQuery%3A%20%28%27%23photos%27%20asJQuery%29%5D.'),
-messageSends: ["new", "do:", "data", "add:", "jsonObject:", "calculateStatsForPhotos", "photo:", "appendToJQuery:", "asJQuery"],
-referencedClasses: ["Array", "HVPhoto", "HVPhotoWidget"]
+source: unescape('photosReceived%3A%20aPhotos%0A%09photos%20%3A%3D%20Array%20new.%0A%09%28aPhotos%20data%29%20do%3A%20%5B%3Aeach%20%7C%20photos%20add%3A%20%28HVPhoto%20new%20jsonObject%3A%20each%29%5D.%20%0A%09self%20calculateStatsForPhotos.%0A'),
+messageSends: ["new", "do:", "data", "add:", "jsonObject:", "calculateStatsForPhotos"],
+referencedClasses: ["Array", "HVPhoto"]
 }),
 smalltalk.HVApplication);
 
@@ -399,14 +401,17 @@ selector: unescape('followingReceived%3A'),
 category: 'logic',
 fn: function (following) {
     var self = this;
-    self['@friends'] = smalltalk.send(following, "_data", []);
-    smalltalk.send(self, "_requestPhotos", []);
+    var cursor = nil;
+    ($receiver = self['@friends']) == nil || $receiver == undefined ? function () {return self['@friends'] = smalltalk.send(smalltalk.Array || Array, "_new", []);}() : $receiver;
+    smalltalk.send(smalltalk.send(following, "_data", []), "_do_", [function (each) {return smalltalk.send(self['@friends'], "_add_", [each]);}]);
+    cursor = smalltalk.send(smalltalk.send(following, "_pagination", []), "_at_", ["next_cursor"]);
+    (function ($rec) {($receiver = $rec) != nil && $receiver != undefined ? function () {return smalltalk.send(self, "_requestFollowingFromCursor_", [cursor]);}() : nil;return ($receiver = $rec) == nil || $receiver == undefined ? function () {return smalltalk.send(self, "_requestPhotos", []);}() : $receiver;}(cursor));
     return self;
 },
 args: ["following"],
-source: unescape('followingReceived%3A%20following%0A%09friends%20%3A%3D%20following%20data.%0A%09self%20requestPhotos.'),
-messageSends: ["data", "requestPhotos"],
-referencedClasses: []
+source: unescape('followingReceived%3A%20following%09%0A%09%7Ccursor%7C%0A%09friends%20ifNil%3A%20%5Bfriends%20%3A%3D%20Array%20new%5D.%0A%09%22Transcript%20show%3A%20%28following%20data%20size%29%20asString%2C%20String%20cr.%22%0A%09following%20data%20do%3A%20%5B%3Aeach%20%7C%20friends%20add%3A%20each%5D.%0A%09cursor%20%3A%3D%20following%20pagination%20at%3A%20%27next_cursor%27.%0A%09cursor%20ifNotNil%3A%20%5Bself%20requestFollowingFromCursor%3A%20cursor%5D%3B%20%0A%09%09%20%20ifNil%3A%20%5Bself%20requestPhotos%5D.%09'),
+messageSends: ["ifNil:", "new", "do:", "data", "add:", "at:", "pagination", "ifNotNil:", "requestFollowingFromCursor:", "requestPhotos"],
+referencedClasses: ["Array"]
 }),
 smalltalk.HVApplication);
 
@@ -417,12 +422,12 @@ selector: unescape('calculateStatsForPhotos'),
 category: 'logic',
 fn: function () {
     var self = this;
-    smalltalk.send(self['@photos'], "_collect_", [function (photo) {var likes = nil;likes = smalltalk.send(smalltalk.send(smalltalk.send(photo, "_jsonObject", []), "_likes", []), "_data", []);return smalltalk.send(photo, "_likesCount_", [smalltalk.send(smalltalk.send(likes, "_select_", [function (like) {return smalltalk.send(smalltalk.send(self, "_friendsUsernames", []), "_includes_", [smalltalk.send(like, "_username", [])]);}]), "_size", [])]);}]);
+    smalltalk.send(self['@photos'], "_do_", [function (photo) {return smalltalk.send(self, "_requestLikesFor_", [photo]);}]);
     return self;
 },
 args: [],
-source: unescape('calculateStatsForPhotos%0A%09photos%20collect%3A%20%5B%3Aphoto%20%7C%0A%09%09%7Clikes%7C%0A%09%09likes%20%3A%3D%20photo%20jsonObject%20likes%20data.%0A%09%09photo%20likesCount%3A%20%28likes%20select%3A%20%5B%3Alike%20%7C%20self%20friendsUsernames%20includes%3A%20%28like%20username%29%5D%29%20size%5D.'),
-messageSends: ["collect:", "data", "likes", "jsonObject", "likesCount:", "size", "select:", "includes:", "friendsUsernames", "username"],
+source: unescape('calculateStatsForPhotos%0A%09%22self%20friendsUsernames%20do%3A%20%5B%3Aeach%20%7C%20Transcript%20show%3A%20each%2C%20String%20cr%5D.%22%0A%09photos%20do%3A%20%5B%3Aphoto%20%7C%20self%20requestLikesFor%3A%20photo%5D.'),
+messageSends: ["do:", "requestLikesFor:"],
 referencedClasses: []
 }),
 smalltalk.HVApplication);
@@ -435,13 +440,66 @@ category: 'accessors',
 fn: function () {
     var self = this;
     return ($receiver = self['@friendsUsernames']) == nil ||
-        $receiver == undefined ? function () {return smalltalk.send(self['@friends'], "_collect_", [function (user) {return smalltalk.send(user, "_username", []);}]);}() : $receiver;
+        $receiver == undefined ? function () {return self['@friendsUsernames'] = smalltalk.send(self['@friends'], "_collect_", [function (user) {return smalltalk.send(user, "_username", []);}]);}() : $receiver;
     return self;
 },
 args: [],
-source: unescape('friendsUsernames%0A%09%5EfriendsUsernames%20ifNil%3A%20%5B%20friends%20collect%3A%20%5B%3Auser%20%7C%20user%20username%5D%5D.'),
+source: unescape('friendsUsernames%0A%09%5EfriendsUsernames%20ifNil%3A%20%5BfriendsUsernames%20%3A%3D%20friends%20collect%3A%20%5B%3Auser%20%7C%20user%20username%5D%5D.'),
 messageSends: ["ifNil:", "collect:", "username"],
 referencedClasses: []
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_requestFollowingFromCursor_'),
+smalltalk.method({
+selector: unescape('requestFollowingFromCursor%3A'),
+category: 'logic',
+fn: function (cursor) {
+    var self = this;
+    smalltalk.send(smalltalk.send(smalltalk.HVRESTClient || HVRESTClient, "_new", []), "_request_callback_", [smalltalk.send(smalltalk.send(smalltalk.send(unescape("v1/users/"), "__comma", [smalltalk.send(self, "_userId", [])]), "__comma", [unescape("/follows%3Fcursor%3D")]), "__comma", [cursor]), function (result) {return smalltalk.send(self, "_followingReceived_", [result]);}]);
+    return self;
+},
+args: ["cursor"],
+source: unescape('requestFollowingFromCursor%3A%20cursor%0A%09HVRESTClient%20new%20%0A%09%09request%3A%20%28%27v1/users/%27%2C%20self%20userId%2C%20%27/follows%3Fcursor%3D%27%2C%20cursor%29%0A%09%09callback%3A%20%5B%3Aresult%20%7C%20self%20followingReceived%3A%20result%5D.'),
+messageSends: ["request:callback:", "new", unescape("%2C"), "userId", "followingReceived:"],
+referencedClasses: ["HVRESTClient"]
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_requestLikesFor_'),
+smalltalk.method({
+selector: unescape('requestLikesFor%3A'),
+category: 'logic',
+fn: function (photo) {
+    var self = this;
+    smalltalk.send(smalltalk.send(smalltalk.HVRESTClient || HVRESTClient, "_new", []), "_request_callback_", [smalltalk.send(smalltalk.send(unescape("v1/media/"), "__comma", [smalltalk.send(smalltalk.send(photo, "_jsonObject", []), "_id", [])]), "__comma", [unescape("/likes")]), function (result) {var likers = nil;likers = smalltalk.send(smalltalk.send(result, "_data", []), "_collect_", [function (like) {return smalltalk.send(like, "_username", []);}]);smalltalk.send(photo, "_likesCount_", [smalltalk.send(smalltalk.send(likers, "_select_", [function (liker) {return smalltalk.send(smalltalk.send(self, "_friendsUsernames", []), "_includes_", [liker]);}]), "_size", [])]);return smalltalk.send(self, "_drawPhoto_", [photo]);}]);
+    return self;
+},
+args: ["photo"],
+source: unescape('requestLikesFor%3A%20photo%0A%09%22Transcript%20show%3A%20photo%20jsonObject%20id%2C%20String%20cr.%22%0A%09HVRESTClient%20new%20request%3A%20%27v1/media/%27%2C%20%28photo%20jsonObject%20id%29%2C%20%27/likes%27%0A%09%09%09%09%20%20%20%20%20callback%3A%20%5B%3Aresult%20%7C%20%0A%09%09%09%09%09%7Clikers%7C%0A%09%09%09%09%09likers%20%3A%3D%20result%20data%20collect%3A%20%5B%3Alike%20%7C%20like%20username%5D.%0A%09%09%09%09%09photo%20likesCount%3A%20%28%28likers%20select%3A%20%5B%3Aliker%20%7C%20self%20friendsUsernames%20includes%3A%20liker%5D%29%20size%29.%0A%09%09%09%09%09self%20drawPhoto%3A%20photo%5D.'),
+messageSends: ["request:callback:", "new", unescape("%2C"), "id", "jsonObject", "collect:", "data", "username", "likesCount:", "size", "select:", "includes:", "friendsUsernames", "drawPhoto:"],
+referencedClasses: ["HVRESTClient"]
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_drawPhoto_'),
+smalltalk.method({
+selector: unescape('drawPhoto%3A'),
+category: 'view',
+fn: function (aPhoto) {
+    var self = this;
+    var widget = nil;
+    widget = smalltalk.send(smalltalk.send(smalltalk.HVPhotoWidget || HVPhotoWidget, "_new", []), "_photo_", [aPhoto]);
+    smalltalk.send(widget, "_appendToJQuery_", [smalltalk.send(unescape("%23photos"), "_asJQuery", [])]);
+    return self;
+},
+args: ["aPhoto"],
+source: unescape('drawPhoto%3A%20aPhoto%0A%09%7Cwidget%7C%0A%09widget%20%3A%3D%20HVPhotoWidget%20new%20photo%3A%20aPhoto.%0A%09widget%20appendToJQuery%3A%20%28%27%23photos%27%20asJQuery%29.'),
+messageSends: ["photo:", "new", "appendToJQuery:", "asJQuery"],
+referencedClasses: ["HVPhotoWidget"]
 }),
 smalltalk.HVApplication);
 

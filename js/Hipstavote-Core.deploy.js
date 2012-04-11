@@ -58,7 +58,10 @@ selector: unescape('request%3Acallback%3A'),
 fn: function (path, aBlock) {
     var self = this;
     var result = nil;
-    result = smalltalk.send(typeof jQuery == "undefined" ? nil : jQuery, "_ajax_options_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(self['@instaUrl'], "__comma", [unescape("/")]), "__comma", [path]), "__comma", [unescape("%3Faccess_token%3D")]), "__comma", [smalltalk.send(smalltalk.HVLocalStorage || HVLocalStorage, "_accessToken", [])]), smalltalk.HashedCollection._fromPairs_([smalltalk.send("type", "__minus_gt", ["GET"]), smalltalk.send("success", "__minus_gt", [function (response) {return smalltalk.send(aBlock, "_value_", [response]);}]), smalltalk.send("error", "__minus_gt", [function (error) {return smalltalk.send(smalltalk.Transcript || Transcript, "_show_", ["error"]);}]), smalltalk.send("dataType", "__minus_gt", ["jsonp"])])]);
+    var options = nil;
+    var getParams = nil;
+    options = smalltalk.HashedCollection._fromPairs_([smalltalk.send("type", "__minus_gt", ["GET"]), smalltalk.send("data", "__minus_gt", [smalltalk.send(unescape("access_token%3D"), "__comma", [smalltalk.send(smalltalk.HVLocalStorage || HVLocalStorage, "_accessToken", [])])]), smalltalk.send("success", "__minus_gt", [function (response) {return smalltalk.send(aBlock, "_value_", [response]);}]), smalltalk.send("error", "__minus_gt", [function (error) {return smalltalk.send(smalltalk.Transcript || Transcript, "_show_", ["error"]);}]), smalltalk.send("dataType", "__minus_gt", ["jsonp"])]);
+    result = smalltalk.send(typeof jQuery == "undefined" ? nil : jQuery, "_ajax_options_", [smalltalk.send(smalltalk.send(self['@instaUrl'], "__comma", [unescape("/")]), "__comma", [path]), options]);
     return self;
 }
 }),
@@ -263,7 +266,6 @@ fn: function (aPhotos) {
     self['@photos'] = smalltalk.send(smalltalk.Array || Array, "_new", []);
     smalltalk.send(smalltalk.send(aPhotos, "_data", []), "_do_", [function (each) {return smalltalk.send(self['@photos'], "_add_", [smalltalk.send(smalltalk.send(smalltalk.HVPhoto || HVPhoto, "_new", []), "_jsonObject_", [each])]);}]);
     smalltalk.send(self, "_calculateStatsForPhotos", []);
-    smalltalk.send(self['@photos'], "_do_", [function (each) {var widget = nil;widget = smalltalk.send(smalltalk.send(smalltalk.HVPhotoWidget || HVPhotoWidget, "_new", []), "_photo_", [each]);return smalltalk.send(widget, "_appendToJQuery_", [smalltalk.send(unescape("%23photos"), "_asJQuery", [])]);}]);
     return self;
 }
 }),
@@ -287,8 +289,11 @@ smalltalk.method({
 selector: unescape('followingReceived%3A'),
 fn: function (following) {
     var self = this;
-    self['@friends'] = smalltalk.send(following, "_data", []);
-    smalltalk.send(self, "_requestPhotos", []);
+    var cursor = nil;
+    ($receiver = self['@friends']) == nil || $receiver == undefined ? function () {return self['@friends'] = smalltalk.send(smalltalk.Array || Array, "_new", []);}() : $receiver;
+    smalltalk.send(smalltalk.send(following, "_data", []), "_do_", [function (each) {return smalltalk.send(self['@friends'], "_add_", [each]);}]);
+    cursor = smalltalk.send(smalltalk.send(following, "_pagination", []), "_at_", ["next_cursor"]);
+    (function ($rec) {($receiver = $rec) != nil && $receiver != undefined ? function () {return smalltalk.send(self, "_requestFollowingFromCursor_", [cursor]);}() : nil;return ($receiver = $rec) == nil || $receiver == undefined ? function () {return smalltalk.send(self, "_requestPhotos", []);}() : $receiver;}(cursor));
     return self;
 }
 }),
@@ -300,7 +305,7 @@ smalltalk.method({
 selector: unescape('calculateStatsForPhotos'),
 fn: function () {
     var self = this;
-    smalltalk.send(self['@photos'], "_collect_", [function (photo) {var likes = nil;likes = smalltalk.send(smalltalk.send(smalltalk.send(photo, "_jsonObject", []), "_likes", []), "_data", []);return smalltalk.send(photo, "_likesCount_", [smalltalk.send(smalltalk.send(likes, "_select_", [function (like) {return smalltalk.send(smalltalk.send(self, "_friendsUsernames", []), "_includes_", [smalltalk.send(like, "_username", [])]);}]), "_size", [])]);}]);
+    smalltalk.send(self['@photos'], "_do_", [function (photo) {return smalltalk.send(self, "_requestLikesFor_", [photo]);}]);
     return self;
 }
 }),
@@ -313,7 +318,45 @@ selector: unescape('friendsUsernames'),
 fn: function () {
     var self = this;
     return ($receiver = self['@friendsUsernames']) == nil ||
-        $receiver == undefined ? function () {return smalltalk.send(self['@friends'], "_collect_", [function (user) {return smalltalk.send(user, "_username", []);}]);}() : $receiver;
+        $receiver == undefined ? function () {return self['@friendsUsernames'] = smalltalk.send(self['@friends'], "_collect_", [function (user) {return smalltalk.send(user, "_username", []);}]);}() : $receiver;
+    return self;
+}
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_requestFollowingFromCursor_'),
+smalltalk.method({
+selector: unescape('requestFollowingFromCursor%3A'),
+fn: function (cursor) {
+    var self = this;
+    smalltalk.send(smalltalk.send(smalltalk.HVRESTClient || HVRESTClient, "_new", []), "_request_callback_", [smalltalk.send(smalltalk.send(smalltalk.send(unescape("v1/users/"), "__comma", [smalltalk.send(self, "_userId", [])]), "__comma", [unescape("/follows%3Fcursor%3D")]), "__comma", [cursor]), function (result) {return smalltalk.send(self, "_followingReceived_", [result]);}]);
+    return self;
+}
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_requestLikesFor_'),
+smalltalk.method({
+selector: unescape('requestLikesFor%3A'),
+fn: function (photo) {
+    var self = this;
+    smalltalk.send(smalltalk.send(smalltalk.HVRESTClient || HVRESTClient, "_new", []), "_request_callback_", [smalltalk.send(smalltalk.send(unescape("v1/media/"), "__comma", [smalltalk.send(smalltalk.send(photo, "_jsonObject", []), "_id", [])]), "__comma", [unescape("/likes")]), function (result) {var likers = nil;likers = smalltalk.send(smalltalk.send(result, "_data", []), "_collect_", [function (like) {return smalltalk.send(like, "_username", []);}]);smalltalk.send(photo, "_likesCount_", [smalltalk.send(smalltalk.send(likers, "_select_", [function (liker) {return smalltalk.send(smalltalk.send(self, "_friendsUsernames", []), "_includes_", [liker]);}]), "_size", [])]);return smalltalk.send(self, "_drawPhoto_", [photo]);}]);
+    return self;
+}
+}),
+smalltalk.HVApplication);
+
+smalltalk.addMethod(
+unescape('_drawPhoto_'),
+smalltalk.method({
+selector: unescape('drawPhoto%3A'),
+fn: function (aPhoto) {
+    var self = this;
+    var widget = nil;
+    widget = smalltalk.send(smalltalk.send(smalltalk.HVPhotoWidget || HVPhotoWidget, "_new", []), "_photo_", [aPhoto]);
+    smalltalk.send(widget, "_appendToJQuery_", [smalltalk.send(unescape("%23photos"), "_asJQuery", [])]);
     return self;
 }
 }),

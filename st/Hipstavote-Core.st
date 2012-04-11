@@ -30,13 +30,13 @@ Object subclass: #HVRESTClient
 !HVRESTClient methodsFor: 'Common Requests'!
 
 request: path callback: aBlock
-	|result|
-	result := jQuery ajax: (instaUrl, '/' , path, '?access_token=', (HVLocalStorage accessToken)) 
-				options: #{
-					'type' -> 'GET'.
-					'success' -> [:response | aBlock value: response].
-					'error' -> [:error | Transcript show: 'error'].
-					'dataType' -> 'jsonp' }.
+	|result options getParams|
+	options := #{'type' -> 'GET'.
+			    'data' -> ('access_token=', (HVLocalStorage accessToken)).
+                            'success' -> [:response | aBlock value: response].
+                            'error' -> [:error | Transcript show: 'error'].
+                            'dataType' -> 'jsonp' }.
+	result := jQuery ajax: (instaUrl, '/' , path) options: options.
 !
 
 requestPhotosOf: anUserId callback: aBlock
@@ -108,7 +108,7 @@ userId: anId
 !
 
 friendsUsernames
-	^friendsUsernames ifNil: [ friends collect: [:user | user username]].
+	^friendsUsernames ifNil: [friendsUsernames := friends collect: [:user | user username]].
 ! !
 
 !HVApplication methodsFor: 'logic'!
@@ -138,10 +138,6 @@ photosReceived: aPhotos
 	photos := Array new.
 	(aPhotos data) do: [:each | photos add: (HVPhoto new jsonObject: each)]. 
 	self calculateStatsForPhotos.
-	photos do: [:each | 
-		|widget|
-		widget := HVPhotoWidget new photo: each.
-		widget appendToJQuery: ('#photos' asJQuery)].
 !
 
 requestFollowing
@@ -150,16 +146,43 @@ requestFollowing
 		callback: [:result | self followingReceived: result].
 !
 
-followingReceived: following
-	friends := following data.
-	self requestPhotos.
+followingReceived: following	
+	|cursor|
+	friends ifNil: [friends := Array new].
+	"Transcript show: (following data size) asString, String cr."
+	following data do: [:each | friends add: each].
+	cursor := following pagination at: 'next_cursor'.
+	cursor ifNotNil: [self requestFollowingFromCursor: cursor]; 
+		  ifNil: [self requestPhotos].
 !
 
 calculateStatsForPhotos
-	photos collect: [:photo |
-		|likes|
-		likes := photo jsonObject likes data.
-		photo likesCount: (likes select: [:like | self friendsUsernames includes: (like username)]) size].
+	"self friendsUsernames do: [:each | Transcript show: each, String cr]."
+	photos do: [:photo | self requestLikesFor: photo].
+!
+
+requestFollowingFromCursor: cursor
+	HVRESTClient new 
+		request: ('v1/users/', self userId, '/follows?cursor=', cursor)
+		callback: [:result | self followingReceived: result].
+!
+
+requestLikesFor: photo
+	"Transcript show: photo jsonObject id, String cr."
+	HVRESTClient new request: 'v1/media/', (photo jsonObject id), '/likes'
+				     callback: [:result | 
+					|likers|
+					likers := result data collect: [:like | like username].
+					photo likesCount: ((likers select: [:liker | self friendsUsernames includes: liker]) size).
+					self drawPhoto: photo].
+! !
+
+!HVApplication methodsFor: 'view'!
+
+drawPhoto: aPhoto
+	|widget|
+	widget := HVPhotoWidget new photo: aPhoto.
+	widget appendToJQuery: ('#photos' asJQuery).
 ! !
 
 !HVApplication class methodsFor: 'not yet classified'!
