@@ -50,7 +50,7 @@ fn: function (aToken) {
 smalltalk.HVLocalStorage.klass);
 
 
-smalltalk.addClass('HVRESTClient', smalltalk.Object, ['instaUrl', 'requestResult'], 'Hipstavote-Core');
+smalltalk.addClass('HVRESTClient', smalltalk.Object, ['instaUrl'], 'Hipstavote-Core');
 smalltalk.addMethod(
 unescape('_request_callback_'),
 smalltalk.method({
@@ -80,33 +80,6 @@ fn: function () {
 smalltalk.HVRESTClient);
 
 smalltalk.addMethod(
-unescape('_testPhotos'),
-smalltalk.method({
-selector: unescape('testPhotos'),
-fn: function () {
-    var self = this;
-    var resultObject = nil;
-    smalltalk.send(self, "_requestPhotosOf_callback_", ["21068579", function (result) {return smalltalk.send(self, "_requestResult_", [result]);}]);
-    return self;
-}
-}),
-smalltalk.HVRESTClient);
-
-smalltalk.addMethod(
-unescape('_requestPhotosOf_callback_'),
-smalltalk.method({
-selector: unescape('requestPhotosOf%3Acallback%3A'),
-fn: function (anUserId, aBlock) {
-    var self = this;
-    var path = nil;
-    path = smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(unescape("v1/users/"), "__comma", [anUserId]), "__comma", [unescape("/media/recent")]), "__comma", [unescape("%3Faccess_token%3D")]), "__comma", [smalltalk.send(smalltalk.HVLocalStorage || HVLocalStorage, "_accessToken", [])]);
-    smalltalk.send(self, "_request_callback_", [path, aBlock]);
-    return self;
-}
-}),
-smalltalk.HVRESTClient);
-
-smalltalk.addMethod(
 unescape('_instaUrl'),
 smalltalk.method({
 selector: unescape('instaUrl'),
@@ -125,30 +98,6 @@ selector: unescape('instaUrl%3A'),
 fn: function (anUrl) {
     var self = this;
     self['@instaUrl'] = anUrl;
-    return self;
-}
-}),
-smalltalk.HVRESTClient);
-
-smalltalk.addMethod(
-unescape('_requestResult_'),
-smalltalk.method({
-selector: unescape('requestResult%3A'),
-fn: function (aResult) {
-    var self = this;
-    self['@requestResult'] = aResult;
-    return self;
-}
-}),
-smalltalk.HVRESTClient);
-
-smalltalk.addMethod(
-unescape('_requestResult'),
-smalltalk.method({
-selector: unescape('requestResult'),
-fn: function () {
-    var self = this;
-    return self['@requestResult'];
     return self;
 }
 }),

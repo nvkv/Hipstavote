@@ -24,7 +24,7 @@ at: aKey put: anObject
 ! !
 
 Object subclass: #HVRESTClient
-	instanceVariableNames: 'instaUrl requestResult'
+	instanceVariableNames: 'instaUrl'
 	category: 'Hipstavote-Core'!
 
 !HVRESTClient methodsFor: 'Common Requests'!
@@ -37,25 +37,12 @@ request: path callback: aBlock
                             'error' -> [:error | Transcript show: 'error'].
                             'dataType' -> 'jsonp' }.
 	result := jQuery ajax: (instaUrl, '/' , path) options: options.
-!
-
-requestPhotosOf: anUserId callback: aBlock
-	|path|
-	path := 'v1/users/', anUserId, '/media/recent', '?access_token=', (HVLocalStorage accessToken).
-	self request: path callback: aBlock
 ! !
 
 !HVRESTClient methodsFor: 'Initialization'!
 
 initialize
 	instaUrl := 'https://api.instagram.com'
-! !
-
-!HVRESTClient methodsFor: 'Requests'!
-
-testPhotos
-	|resultObject|
-	self requestPhotosOf: '21068579' callback: [:result | self requestResult: result].
 ! !
 
 !HVRESTClient methodsFor: 'Setters/Getters'!
@@ -66,14 +53,6 @@ instaUrl
 
 instaUrl: anUrl
 	instaUrl := anUrl.
-!
-
-requestResult: aResult
-	requestResult := aResult.
-!
-
-requestResult
-	^requestResult.
 ! !
 
 Object subclass: #HVInstaObject
@@ -149,7 +128,6 @@ requestFollowing
 followingReceived: following	
 	|cursor|
 	friends ifNil: [friends := Array new].
-	"Transcript show: (following data size) asString, String cr."
 	following data do: [:each | friends add: each].
 	cursor := following pagination at: 'next_cursor'.
 	cursor ifNotNil: [self requestFollowingFromCursor: cursor]; 
@@ -157,7 +135,6 @@ followingReceived: following
 !
 
 calculateStatsForPhotos
-	"self friendsUsernames do: [:each | Transcript show: each, String cr]."
 	photos do: [:photo | self requestLikesFor: photo].
 !
 
@@ -170,7 +147,7 @@ requestFollowingFromCursor: cursor
 requestLikesFor: photo
 	"Transcript show: photo jsonObject id, String cr."
 	HVRESTClient new request: 'v1/media/', (photo jsonObject id), '/likes'
-				     callback: [:result | 
+				     callback: [:result |
 					|likers|
 					likers := result data collect: [:like | like username].
 					photo likesCount: ((likers select: [:liker | self friendsUsernames includes: liker]) size).

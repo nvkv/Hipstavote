@@ -70,7 +70,7 @@ referencedClasses: ["HVLocalStorage"]
 smalltalk.HVLocalStorage.klass);
 
 
-smalltalk.addClass('HVRESTClient', smalltalk.Object, ['instaUrl', 'requestResult'], 'Hipstavote-Core');
+smalltalk.addClass('HVRESTClient', smalltalk.Object, ['instaUrl'], 'Hipstavote-Core');
 smalltalk.addMethod(
 unescape('_request_callback_'),
 smalltalk.method({
@@ -110,43 +110,6 @@ referencedClasses: []
 smalltalk.HVRESTClient);
 
 smalltalk.addMethod(
-unescape('_testPhotos'),
-smalltalk.method({
-selector: unescape('testPhotos'),
-category: 'Requests',
-fn: function () {
-    var self = this;
-    var resultObject = nil;
-    smalltalk.send(self, "_requestPhotosOf_callback_", ["21068579", function (result) {return smalltalk.send(self, "_requestResult_", [result]);}]);
-    return self;
-},
-args: [],
-source: unescape('testPhotos%0A%09%7CresultObject%7C%0A%09self%20requestPhotosOf%3A%20%2721068579%27%20callback%3A%20%5B%3Aresult%20%7C%20self%20requestResult%3A%20result%5D.'),
-messageSends: ["requestPhotosOf:callback:", "requestResult:"],
-referencedClasses: []
-}),
-smalltalk.HVRESTClient);
-
-smalltalk.addMethod(
-unescape('_requestPhotosOf_callback_'),
-smalltalk.method({
-selector: unescape('requestPhotosOf%3Acallback%3A'),
-category: 'Common Requests',
-fn: function (anUserId, aBlock) {
-    var self = this;
-    var path = nil;
-    path = smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(unescape("v1/users/"), "__comma", [anUserId]), "__comma", [unescape("/media/recent")]), "__comma", [unescape("%3Faccess_token%3D")]), "__comma", [smalltalk.send(smalltalk.HVLocalStorage || HVLocalStorage, "_accessToken", [])]);
-    smalltalk.send(self, "_request_callback_", [path, aBlock]);
-    return self;
-},
-args: ["anUserId", "aBlock"],
-source: unescape('requestPhotosOf%3A%20anUserId%20callback%3A%20aBlock%0A%09%7Cpath%7C%0A%09path%20%3A%3D%20%27v1/users/%27%2C%20anUserId%2C%20%27/media/recent%27%2C%20%27%3Faccess_token%3D%27%2C%20%28HVLocalStorage%20accessToken%29.%0A%09self%20request%3A%20path%20callback%3A%20aBlock'),
-messageSends: [unescape("%2C"), "accessToken", "request:callback:"],
-referencedClasses: ["HVLocalStorage"]
-}),
-smalltalk.HVRESTClient);
-
-smalltalk.addMethod(
 unescape('_instaUrl'),
 smalltalk.method({
 selector: unescape('instaUrl'),
@@ -175,40 +138,6 @@ fn: function (anUrl) {
 },
 args: ["anUrl"],
 source: unescape('instaUrl%3A%20anUrl%0A%09instaUrl%20%3A%3D%20anUrl.'),
-messageSends: [],
-referencedClasses: []
-}),
-smalltalk.HVRESTClient);
-
-smalltalk.addMethod(
-unescape('_requestResult_'),
-smalltalk.method({
-selector: unescape('requestResult%3A'),
-category: 'Setters/Getters',
-fn: function (aResult) {
-    var self = this;
-    self['@requestResult'] = aResult;
-    return self;
-},
-args: ["aResult"],
-source: unescape('requestResult%3A%20aResult%0A%09requestResult%20%3A%3D%20aResult.'),
-messageSends: [],
-referencedClasses: []
-}),
-smalltalk.HVRESTClient);
-
-smalltalk.addMethod(
-unescape('_requestResult'),
-smalltalk.method({
-selector: unescape('requestResult'),
-category: 'Setters/Getters',
-fn: function () {
-    var self = this;
-    return self['@requestResult'];
-    return self;
-},
-args: [],
-source: unescape('requestResult%0A%09%5ErequestResult.'),
 messageSends: [],
 referencedClasses: []
 }),
@@ -409,7 +338,7 @@ fn: function (following) {
     return self;
 },
 args: ["following"],
-source: unescape('followingReceived%3A%20following%09%0A%09%7Ccursor%7C%0A%09friends%20ifNil%3A%20%5Bfriends%20%3A%3D%20Array%20new%5D.%0A%09%22Transcript%20show%3A%20%28following%20data%20size%29%20asString%2C%20String%20cr.%22%0A%09following%20data%20do%3A%20%5B%3Aeach%20%7C%20friends%20add%3A%20each%5D.%0A%09cursor%20%3A%3D%20following%20pagination%20at%3A%20%27next_cursor%27.%0A%09cursor%20ifNotNil%3A%20%5Bself%20requestFollowingFromCursor%3A%20cursor%5D%3B%20%0A%09%09%20%20ifNil%3A%20%5Bself%20requestPhotos%5D.%09'),
+source: unescape('followingReceived%3A%20following%09%0A%09%7Ccursor%7C%0A%09friends%20ifNil%3A%20%5Bfriends%20%3A%3D%20Array%20new%5D.%0A%09following%20data%20do%3A%20%5B%3Aeach%20%7C%20friends%20add%3A%20each%5D.%0A%09cursor%20%3A%3D%20following%20pagination%20at%3A%20%27next_cursor%27.%0A%09cursor%20ifNotNil%3A%20%5Bself%20requestFollowingFromCursor%3A%20cursor%5D%3B%20%0A%09%09%20%20ifNil%3A%20%5Bself%20requestPhotos%5D.'),
 messageSends: ["ifNil:", "new", "do:", "data", "add:", "at:", "pagination", "ifNotNil:", "requestFollowingFromCursor:", "requestPhotos"],
 referencedClasses: ["Array"]
 }),
@@ -426,7 +355,7 @@ fn: function () {
     return self;
 },
 args: [],
-source: unescape('calculateStatsForPhotos%0A%09%22self%20friendsUsernames%20do%3A%20%5B%3Aeach%20%7C%20Transcript%20show%3A%20each%2C%20String%20cr%5D.%22%0A%09photos%20do%3A%20%5B%3Aphoto%20%7C%20self%20requestLikesFor%3A%20photo%5D.'),
+source: unescape('calculateStatsForPhotos%0A%09photos%20do%3A%20%5B%3Aphoto%20%7C%20self%20requestLikesFor%3A%20photo%5D.'),
 messageSends: ["do:", "requestLikesFor:"],
 referencedClasses: []
 }),
@@ -478,7 +407,7 @@ fn: function (photo) {
     return self;
 },
 args: ["photo"],
-source: unescape('requestLikesFor%3A%20photo%0A%09%22Transcript%20show%3A%20photo%20jsonObject%20id%2C%20String%20cr.%22%0A%09HVRESTClient%20new%20request%3A%20%27v1/media/%27%2C%20%28photo%20jsonObject%20id%29%2C%20%27/likes%27%0A%09%09%09%09%20%20%20%20%20callback%3A%20%5B%3Aresult%20%7C%20%0A%09%09%09%09%09%7Clikers%7C%0A%09%09%09%09%09likers%20%3A%3D%20result%20data%20collect%3A%20%5B%3Alike%20%7C%20like%20username%5D.%0A%09%09%09%09%09photo%20likesCount%3A%20%28%28likers%20select%3A%20%5B%3Aliker%20%7C%20self%20friendsUsernames%20includes%3A%20liker%5D%29%20size%29.%0A%09%09%09%09%09self%20drawPhoto%3A%20photo%5D.'),
+source: unescape('requestLikesFor%3A%20photo%0A%09%22Transcript%20show%3A%20photo%20jsonObject%20id%2C%20String%20cr.%22%0A%09HVRESTClient%20new%20request%3A%20%27v1/media/%27%2C%20%28photo%20jsonObject%20id%29%2C%20%27/likes%27%0A%09%09%09%09%20%20%20%20%20callback%3A%20%5B%3Aresult%20%7C%0A%09%09%09%09%09%7Clikers%7C%0A%09%09%09%09%09likers%20%3A%3D%20result%20data%20collect%3A%20%5B%3Alike%20%7C%20like%20username%5D.%0A%09%09%09%09%09photo%20likesCount%3A%20%28%28likers%20select%3A%20%5B%3Aliker%20%7C%20self%20friendsUsernames%20includes%3A%20liker%5D%29%20size%29.%0A%09%09%09%09%09self%20drawPhoto%3A%20photo%5D.'),
 messageSends: ["request:callback:", "new", unescape("%2C"), "id", "jsonObject", "collect:", "data", "username", "likesCount:", "size", "select:", "includes:", "friendsUsernames", "drawPhoto:"],
 referencedClasses: ["HVRESTClient"]
 }),
