@@ -7,12 +7,12 @@ selector: unescape('renderOn%3A'),
 category: 'not yet classified',
 fn: function (html) {
     var self = this;
-    (function ($rec) {smalltalk.send($rec, "_with_", [function () {smalltalk.send(smalltalk.send(html, "_img", []), "_src_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(self['@photo'], "_jsonObject", []), "_images", []), "_at_", ["low_resolution"]), "_url", [])]);return smalltalk.send(smalltalk.send(html, "_p", []), "_with_", [smalltalk.send(unescape("%u0418%u043D%u0442%u0435%u0440%u0435%u0441%u043D%u044B%u0435%20%u043B%u0430%u0439%u043A%u0438%3A%20"), "__comma", [smalltalk.send(self['@photo'], "_likesCount", [])])]);}]);return smalltalk.send($rec, "_class_", ["photo"]);}(smalltalk.send(html, "_div", [])));
+    (function ($rec) {smalltalk.send($rec, "_with_", [function () {smalltalk.send(smalltalk.send(html, "_img", []), "_src_", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(self['@photo'], "_jsonObject", []), "_images", []), "_at_", ["low_resolution"]), "_url", [])]);return smalltalk.send(smalltalk.send(html, "_p", []), "_with_", [function () {smalltalk.send(smalltalk.send(html, "_span", []), "_with_", ["Interesing likes: "]);smalltalk.send(smalltalk.send(html, "_span", []), "_with_", [function () {return smalltalk.send(smalltalk.send(html, "_strong", []), "_with_", [smalltalk.send(smalltalk.send(self['@photo'], "_likesCount", []), "_asString", [])]);}]);return smalltalk.send(smalltalk.send(html, "_span", []), "_with_", [smalltalk.send(smalltalk.send(unescape("%20%28Overall%3A%20"), "__comma", [smalltalk.send(smalltalk.send(smalltalk.send(smalltalk.send(self['@photo'], "_jsonObject", []), "_likes", []), "_count", []), "_asString", [])]), "__comma", [unescape("%29")])]);}]);}]);return smalltalk.send($rec, "_class_", ["photo"]);}(smalltalk.send(html, "_div", [])));
     return self;
 },
 args: ["html"],
-source: unescape('renderOn%3A%20html%0A%09html%20div%20with%3A%20%5B%0A%09%09html%20img%20src%3A%20%28%28photo%20jsonObject%20images%20at%3A%20%27low_resolution%27%29%20url%29.%0A%09%09html%20p%20with%3A%20%27%u0418%u043D%u0442%u0435%u0440%u0435%u0441%u043D%u044B%u0435%20%u043B%u0430%u0439%u043A%u0438%3A%20%27%2C%20photo%20likesCount.%5D%3B%20class%3A%20%27photo%27.'),
-messageSends: ["with:", "src:", "img", "url", "at:", "images", "jsonObject", "p", unescape("%2C"), "likesCount", "class:", "div"],
+source: unescape('renderOn%3A%20html%0A%09html%20div%20with%3A%20%5B%0A%09%09html%20img%20src%3A%20%28%28photo%20jsonObject%20images%20at%3A%20%27low_resolution%27%29%20url%29.%0A%09%09html%20p%20with%3A%20%5B%0A%09%09%09html%20span%20with%3A%20%27Interesing%20likes%3A%20%27.%20%0A%09%09%09html%20span%20with%3A%20%5Bhtml%20strong%20with%3A%20photo%20likesCount%20asString%5D.%20%0A%09%09%09html%20span%20with%3A%20%27%20%28Overall%3A%20%27%2C%20photo%20jsonObject%20likes%20count%20asString%2C%20%27%29%27.%0A%09%09%5D%5D%3B%20class%3A%20%27photo%27.'),
+messageSends: ["with:", "src:", "img", "url", "at:", "images", "jsonObject", "p", "span", "strong", "asString", "likesCount", unescape("%2C"), "count", "likes", "class:", "div"],
 referencedClasses: []
 }),
 smalltalk.HVPhotoWidget);
